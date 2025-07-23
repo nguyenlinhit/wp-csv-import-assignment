@@ -25,7 +25,24 @@ define( 'NONCE_SALT', 'UKDYROKjrzvqwBsCuRWHrEyaIoKUzMShogYSZLeDOLZUQpbxZrOahqxTS
 
 /* Add any custom values between this line and the "stop editing" line. */
 //add new jwt secret dUGqdbteTynMjmBPxRxDqOLqJWoTWONFaUFNslNxzDyAkettzoysSDxWwGIjisbb
-define('CPI_JWT_SECRET', 'dUGqdbteTynMjmBPxRxDqOLqJWoTWONFaUFNslNxzDyAkettzoysSDxWwGIjisbb');
+//define('CPI_JWT_SECRET', 'dUGqdbteTynMjmBPxRxDqOLqJWoTWONFaUFNslNxzDyAkettzoysSDxWwGIjisbb');
+
+// Render ENV
+if ( getenv('DB_NAME') ) {
+    define( 'DB_NAME', getenv('DB_NAME') );
+    define( 'DB_USER', getenv('DB_USER') );
+    define( 'DB_PASSWORD', getenv('DB_PASSWORD') );
+    define( 'DB_HOST', getenv('DB_HOST') );
+}
+
+if ( getenv('WP_HOME') ) {
+    define( 'WP_HOME', getenv('WP_HOME') );
+    define( 'WP_SITEURL', getenv('WP_SITEURL') ?: getenv('WP_HOME') );
+}
+
+if ( getenv('CPI_JWT_SECRET') ) {
+    define( 'CPI_JWT_SECRET', getenv('CPI_JWT_SECRET') );
+}
 
 /* That's all, stop editing! Happy publishing. */
 

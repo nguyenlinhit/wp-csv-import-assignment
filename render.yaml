@@ -1,0 +1,48 @@
+services:
+  - type: web
+    name: wp-app
+    env: docker
+    plan: starter   # hoặc free thử
+    dockerfilePath: Dockerfile
+    autoDeploy: true
+    envVars:
+      - key: WP_HOME
+        value: https://wp-csv-import-assignment.onrender.com
+      - key: WP_SITEURL
+        value: https://wp-csv-import-assignment.onrender.com
+      - key: DB_NAME
+        value: wp
+      - key: DB_USER
+        value: wp
+      - key: DB_PASSWORD
+        generateValue: true
+      - key: DB_HOST
+        value: db:3306
+      - key: CPI_JWT_SECRET
+        generateValue: true
+    disk:
+      name: wp-uploads
+      mountPath: /var/www/html/wp-content/uploads
+      sizeGB: 2
+
+  - type: private_service
+    name: db
+    env: docker
+    dockerfilePath: mysql.Dockerfile
+    plan: starter
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 2
+    envVars:
+      - key: MYSQL_DATABASE
+        value: wp
+      - key: MYSQL_USER
+        value: wp
+      - key: MYSQL_PASSWORD
+        fromService:
+          type: web
+          name: wp-app
+          envVarKey: DB_PASSWORD
+      - key: MYSQL_ROOT_PASSWORD
+        generateValue: true
