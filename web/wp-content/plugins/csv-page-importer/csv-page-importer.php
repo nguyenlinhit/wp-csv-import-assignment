@@ -89,7 +89,7 @@ add_action( 'template_redirect', function () {
 
     $post_id = get_the_ID();
 
-    // Chỉ khóa những page được tạo bởi plugin (có meta _cpi_batch_id)
+    // Only block pages created by plugins (with meta _cpi_batch_id)
     $batch_id = get_post_meta( $post_id, '_cpi_batch_id', true );
     if ( empty( $batch_id ) ) {
         return; // page thường -> không check
@@ -103,7 +103,7 @@ add_action( 'template_redirect', function () {
 
     try {
         $decoded = JWT::decode( $token, new Key( CPI_JWT_SECRET, 'HS256' ) );
-        // Optional: kiểm tra thêm payload (exp, post_id, batch_id, roles...)
+        // Optional: check more on payload (exp, post_id, batch_id, roles...)
         if ( ! empty( $decoded->pid ) && intval( $decoded->pid ) !== $post_id ) {
             cpi_forbid( 'Token not for this page.' );
         }
@@ -141,7 +141,7 @@ add_action( 'rest_api_init', function () {
     ] );
 } );
 
-//add
+//add place to generate token for page
 add_action( 'add_meta_boxes', function() {
     add_meta_box(
         'cpi_token_box',
