@@ -1,23 +1,29 @@
+apiVersion: "1"
+
 services:
+  # WordPress
   - type: web
     name: wp-app
     env: docker
-    plan: starter   # hoặc free thử
     dockerfilePath: Dockerfile
+    plan: starter
     autoDeploy: true
     envVars:
-      - key: WP_HOME
-        value: https://wp-csv-import-assignment.onrender.com
-      - key: WP_SITEURL
-        value: https://wp-csv-import-assignment.onrender.com
       - key: DB_NAME
         value: wp
       - key: DB_USER
         value: wp
       - key: DB_PASSWORD
-        generateValue: true
+        fromService:
+          type: private_service
+          name: db
+          envVarKey: MYSQL_PASSWORD
       - key: DB_HOST
         value: db:3306
+      - key: WP_HOME
+        value: https://wp-csv-import-assignment.onrender.com
+      - key: WP_SITEURL
+        value: https://wp-csv-import-assignment.onrender.com
       - key: CPI_JWT_SECRET
         generateValue: true
     disk:
@@ -25,24 +31,23 @@ services:
       mountPath: /var/www/html/wp-content/uploads
       sizeGB: 2
 
+  # MariaDB
   - type: private_service
     name: db
     env: docker
     dockerfilePath: mysql.Dockerfile
     plan: starter
-    disk:
-      name: mysql-data
-      mountPath: /var/lib/mysql
-      sizeGB: 2
+    autoDeploy: false
     envVars:
       - key: MYSQL_DATABASE
         value: wp
       - key: MYSQL_USER
         value: wp
       - key: MYSQL_PASSWORD
-        fromService:
-          type: web
-          name: wp-app
-          envVarKey: DB_PASSWORD
+        generateValue: true
       - key: MYSQL_ROOT_PASSWORD
         generateValue: true
+    disk:
+      name: mysql-data
+      mountPath: /var/lib/mysql
+      sizeGB: 2
