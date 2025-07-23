@@ -1,13 +1,11 @@
 apiVersion: "1"
 
 services:
-  # WordPress
   - type: web
     name: wp-app
     env: docker
     dockerfilePath: Dockerfile
     plan: starter
-    autoDeploy: true
     envVars:
       - key: DB_NAME
         value: wp
@@ -31,13 +29,12 @@ services:
       mountPath: /var/www/html/wp-content/uploads
       sizeGB: 2
 
-  # MariaDB
+privateServices:
   - type: private_service
     name: db
     env: docker
     dockerfilePath: mysql.Dockerfile
     plan: starter
-    autoDeploy: false
     envVars:
       - key: MYSQL_DATABASE
         value: wp
